@@ -8,7 +8,8 @@ use crate::{arguments::InitArgs, font::liberation_serif};
 
 pub fn parse_inputs() -> Result<(String, String)> {
     let arguments = InitArgs::parse();
-    Ok((read_to_string(arguments.text_file)?, arguments.name))
+    let text = read_to_string(arguments.text_file)?;
+    Ok((header(&text), arguments.name))
 }
 
 pub fn generate_pdf(text: &str, name: &str) -> Result<()> {
@@ -34,4 +35,14 @@ pub fn generate_pdf(text: &str, name: &str) -> Result<()> {
     doc.render_to_file(mod_name)?;
 
     Ok(())
+}
+
+pub fn header(text: &str) -> String {
+    let date = chrono::Local::now().to_string();
+    let mut binding = String::from("Zi Hao Liang");
+    binding += "\n";
+    binding += &date;
+    binding += "\n\n";
+    binding += text;
+    binding
 }
