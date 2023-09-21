@@ -6,7 +6,7 @@ use clap::Parser;
 #[command(version = "0.1.0")]
 #[command(about="Text to PDF utility.", long_about=None)]
 pub struct InitArgs {
-    #[arg(short, long, default_value_t = String::from("Untitled_Homework"))]
+    #[arg(short, long, default_value_t = String::from("Untitled"))]
     pub name: String,
 
     #[arg(required = true)]
