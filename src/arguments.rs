@@ -12,6 +12,12 @@ pub struct InitArgs {
     #[arg(short, long, default_value_t = 10)]
     pub margins: u32,
 
+    #[arg(short, long, default_value_t = 1.25)]
+    pub spacing: f64,
+
+    #[arg(short, long, default_value_t = String::from(""))]
+    pub add_header: String,
+
     #[arg(required = true)]
     pub text_file: String,
 }

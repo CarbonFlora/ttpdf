@@ -9,7 +9,7 @@ use crate::{arguments::InitArgs, font::liberation_serif};
 pub fn pdf() -> Result<()> {
     let arguments = InitArgs::parse();
     let mut text = read_to_string(arguments.text_file)?;
-    text = header(&text);
+    text = header(&arguments.add_header, &text);
 
     let mut mod_name = arguments.name.clone();
     let font_family = liberation_serif()?;
@@ -20,7 +20,7 @@ pub fn pdf() -> Result<()> {
     doc.set_title(&mod_name);
     doc.set_page_decorator(decorator);
     doc.set_minimal_conformance();
-    doc.set_line_spacing(1.25);
+    doc.set_line_spacing(arguments.spacing);
 
     let split_text = text.split('\n').collect::<Vec<&str>>();
     for line in split_text {
@@ -35,11 +35,13 @@ pub fn pdf() -> Result<()> {
     Ok(())
 }
 
-pub fn header(text: &str) -> String {
+pub fn header(add_header: &String, text: &str) -> String {
     let date = chrono::Local::now().to_string();
     let mut binding = String::from("Zi Hao Liang");
     binding += "\n";
     binding += &date;
+    binding += "\n";
+    binding += add_header;
     binding += "\n\n";
     binding += text;
     binding
