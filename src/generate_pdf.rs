@@ -6,18 +6,16 @@ use genpdf::{elements::Paragraph, Document, SimplePageDecorator};
 
 use crate::{arguments::InitArgs, font::liberation_serif};
 
-pub fn parse_inputs() -> Result<(String, String)> {
+pub fn pdf() -> Result<()> {
     let arguments = InitArgs::parse();
-    let text = read_to_string(arguments.text_file)?;
-    Ok((header(&text), arguments.name))
-}
+    let mut text = read_to_string(arguments.text_file)?;
+    text = header(&text);
 
-pub fn generate_pdf(text: &str, name: &str) -> Result<()> {
-    let mut mod_name = name.to_string();
+    let mut mod_name = arguments.name.clone();
     let font_family = liberation_serif()?;
     let mut doc = Document::new(font_family);
     let mut decorator = SimplePageDecorator::new();
-    decorator.set_margins(10);
+    decorator.set_margins(arguments.margins);
 
     doc.set_title(&mod_name);
     doc.set_page_decorator(decorator);
@@ -29,7 +27,7 @@ pub fn generate_pdf(text: &str, name: &str) -> Result<()> {
         doc.push(Paragraph::new(line));
     }
 
-    if !name.contains('.') {
+    if !arguments.name.contains('.') {
         mod_name += ".pdf";
     }
     doc.render_to_file(mod_name)?;

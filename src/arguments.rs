@@ -9,6 +9,9 @@ pub struct InitArgs {
     #[arg(short, long, default_value_t = String::from("Untitled"))]
     pub name: String,
 
+    #[arg(short, long, default_value_t = 10)]
+    pub margins: u32,
+
     #[arg(required = true)]
     pub text_file: String,
 }
