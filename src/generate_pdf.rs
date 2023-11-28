@@ -8,10 +8,10 @@ use crate::{arguments::InitArgs, font::liberation_serif};
 
 pub fn pdf() -> Result<()> {
     let arguments = InitArgs::parse();
-    let mut text = read_to_string(arguments.text_file)?;
+    let mut text = read_to_string(&arguments.text_file)?;
     text = header(&arguments.add_header, &text);
 
-    let mut mod_name = arguments.name.clone();
+    let mod_name = trim_path(&arguments.text_file);
     let font_family = liberation_serif()?;
     let mut doc = Document::new(font_family);
     let mut decorator = SimplePageDecorator::new();
@@ -27,12 +27,21 @@ pub fn pdf() -> Result<()> {
         doc.push(Paragraph::new(line));
     }
 
-    if !arguments.name.contains('.') {
-        mod_name += ".pdf";
-    }
-    doc.render_to_file(mod_name)?;
+    doc.render_to_file(mod_name + ".pdf")?;
 
     Ok(())
+}
+
+fn trim_path(text: &str) -> String {
+    let mut plain = text.to_string();
+    if text.starts_with('.') {
+        plain = plain.chars().skip(2).collect();
+    }
+    if plain.contains('.') {
+        plain = plain.split_once('.').unwrap().0.to_string();
+    }
+
+    return plain.to_string();
 }
 
 pub fn header(add_header: &String, text: &str) -> String {
